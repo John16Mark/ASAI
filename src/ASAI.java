@@ -4,12 +4,6 @@ import java.util.List;
 import java.util.Stack;
 
 public class ASAI implements Parser{
-    /*
-    private int i = 0;
-    private final List<Token> tokens;
-    private final Stack<Object> pila = new Stack<>();
-    */
-
     // Producciones
     /*
     private ArrayList<Object> Q = new ArrayList<>(Arrays.asList(TipoToken.SELECT, NoTerminal.D, TipoToken.FROM, NoTerminal.T));
@@ -53,11 +47,11 @@ public class ASAI implements Parser{
     private Produccion F_2 = new Produccion(NoTerminal.F, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR)));
     private final ArrayList<Produccion> ListaProducciones = new ArrayList<>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2));
 
-    // Estados
+    // Tabla acción
     private final ArrayList<ArrayList<ArrayList<Object>>> tablaAccion = new ArrayList<>();
     private final ArrayList<Integer> filas = new ArrayList<>();
     private final ArrayList<TipoToken> columnas = new ArrayList<>(Arrays.asList(TipoToken.IDENTIFICADOR, TipoToken.SUMA, TipoToken.ASTERISCO, TipoToken.PAREN_IZQ, TipoToken.PAREN_DER, TipoToken.EOF));
-
+    // Tabla Ir_A
     private final ArrayList<ArrayList<Integer>> tablaIrA = new ArrayList<>();
     private final ArrayList<NoTerminal> colIrA = new ArrayList<>(Arrays.asList(NoTerminal.E, NoTerminal.T, NoTerminal.F));
 
@@ -145,11 +139,12 @@ public class ASAI implements Parser{
         while(i < tokens.size()){
             int colu = columnas.indexOf(tokens.get(i).tipo);
             int fila = filas.indexOf(pila.peek());
+            /*
             System.out.print("\n\033[94m  TABLA ACCIÓN\033[0m");
             System.out.print("\nCelda: ["+pila.peek()+ ", "+TipoToken.imprimir(tokens.get(i).tipo)+"] = "+tablaAccion.get(fila).get(colu));
             System.out.print("\nPila: "+pila);
             System.out.print("\nSímbolos: "+impSimbolos()+"\n");
-            
+            */
             // Si la celda está vacía -> Error
             if(tablaAccion.get(fila).get(colu) == null){
                 System.out.println("\033[91mSe encontraron errores\033[0m");
@@ -177,16 +172,14 @@ public class ASAI implements Parser{
                     simbolos.push(PaR.ladoIzquierdo);
 
                     // Buscar el Ir A correspondiente
-                    //pila.pop();
                     Integer estadoIrA = tablaIrA.get(pila.peek()).get(colIrA.indexOf(PaR.ladoIzquierdo));
-                    System.out.print("\nIr A: "+estadoIrA);
+                    //System.out.print("\nIr A: "+estadoIrA);
                     if(estadoIrA == null){
                         System.out.println("\033[91mSe encontraron errores\033[0m");
                         return false;
                     }
                     pila.push(estadoIrA);
-                    System.out.print("\nPila: "+pila+"\n");
-                    //tablaIrA.get(fila);
+                    //System.out.print("\nPila: "+pila+"\n");
                 }
             }
         }
