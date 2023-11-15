@@ -41,6 +41,7 @@ public class ASAI implements Parser{
     private int i = 0;
     private final List<Token> tokens;
     private final Stack<Integer> pila = new Stack<>();
+    private final Stack<Object> simbolos = new Stack<>();
 
     // Producciones
     private Produccion E_ = new Produccion(NoTerminal.E_, new ArrayList<Object>(Arrays.asList(NoTerminal.E)));
@@ -50,20 +51,22 @@ public class ASAI implements Parser{
     private Produccion T_2 = new Produccion(NoTerminal.T, new ArrayList<Object>(Arrays.asList(NoTerminal.F)));
     private Produccion F_1 = new Produccion(NoTerminal.T, new ArrayList<Object>(Arrays.asList(TipoToken.PAREN_IZQ, NoTerminal.E, TipoToken.PAREN_DER)));
     private Produccion F_2 = new Produccion(NoTerminal.T, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR)));
+    private final ArrayList<Produccion> ListaProducciones = new ArrayList<>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2));
 
     // Estados
-    private final ArrayList<Produccion> I0 = new ArrayList<>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2));
-    private final ArrayList<Produccion> I1 = new ArrayList<>(Arrays.asList(E_, E_1));
-    private final ArrayList<Produccion> I2 = new ArrayList<>(Arrays.asList(E_2, T_1));
-    private final ArrayList<Produccion> I3 = new ArrayList<>(Arrays.asList(T_2));
-    private final ArrayList<Produccion> I4 = new ArrayList<>(Arrays.asList(F_1, E_1, E_2, T_1, T_2, F_1, F_2));
-    private final ArrayList<Produccion> I5 = new ArrayList<>(Arrays.asList(F_2));
-    private final ArrayList<Produccion> I6 = new ArrayList<>(Arrays.asList(E_1, T_1, T_2, F_1, F_2));
-    private final ArrayList<Produccion> I7 = new ArrayList<>(Arrays.asList(T_1, F_1, F_2));
-    private final ArrayList<Produccion> I8 = new ArrayList<>(Arrays.asList(E_1, F_1));
-    private final ArrayList<Produccion> I9 = new ArrayList<>(Arrays.asList(E_1, T_1));
-    private final ArrayList<Produccion> I10 = new ArrayList<>(Arrays.asList(T_1));
-    private final ArrayList<Produccion> I11 = new ArrayList<>(Arrays.asList(F_1));
+    private final Estado I0 = new Estado(null, new ArrayList<Produccion>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2)));
+    private final Estado I1 = new Estado(NoTerminal.E, new ArrayList<Produccion>(Arrays.asList(E_, E_1)));
+    private final Estado I2 = new Estado(NoTerminal.T, new ArrayList<Produccion>(Arrays.asList(E_2, T_1)));
+    private final Estado I3 = new Estado(NoTerminal.F, new ArrayList<Produccion>(Arrays.asList(T_2)));
+    private final Estado I4 = new Estado(TipoToken.PAREN_IZQ, new ArrayList<Produccion>(Arrays.asList(F_1, E_1, E_2, T_1, T_2, F_1, F_2)));
+    private final Estado I5 = new Estado(TipoToken.IDENTIFICADOR, new ArrayList<Produccion>(Arrays.asList(F_2)));
+    private final Estado I6 = new Estado(TipoToken.SUMA, new ArrayList<Produccion>(Arrays.asList(E_1, T_1, T_2, F_1, F_2)));
+    private final Estado I7 = new Estado(TipoToken.ASTERISCO, new ArrayList<Produccion>(Arrays.asList(T_1, F_1, F_2)));
+    private final Estado I8 = new Estado(NoTerminal.E, new ArrayList<Produccion>(Arrays.asList(E_1, F_1)));
+    private final Estado I9 = new Estado(NoTerminal.T, new ArrayList<Produccion>(Arrays.asList(E_1, T_1)));
+    private final Estado I10 = new Estado(NoTerminal.F, new ArrayList<Produccion>(Arrays.asList(T_1)));
+    private final Estado I11 = new Estado(TipoToken.PAREN_DER, new ArrayList<Produccion>(Arrays.asList(F_1)));
+    private final ArrayList<Estado> ListaEstados = new ArrayList<>(Arrays.asList(I0, I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11));
 
     private final ArrayList<ArrayList<ArrayList<Object>>> tablaAccion = new ArrayList<>();
     private final ArrayList<Integer> filas = new ArrayList<>();
@@ -149,19 +152,29 @@ public class ASAI implements Parser{
 
     @Override
     public boolean parse() {
-        //pila.push(TipoToken.EOF);
-        //pila.push(NoTerminal.Q);
-
         pila.push(0);
-
-        while(i < tokens.size()){
-            int colu = columnas.indexOf(tokens.get(i));
+        
+        int k = 0;
+        while(i < tokens.size() && k < 20){
+            int colu = columnas.indexOf(tokens.get(i).tipo);
             int fila = filas.indexOf(pila.peek());
+            System.out.println("Fila: "+pila.peek()+ "\t\tColumna: "+tokens.get(i).tipo+"\nCelda: "+tablaAccion.get(fila).get(colu));
+            
+            // Si la celda está vacía -> Error
             if(tablaAccion.get(fila).get(colu) == null){
                 System.out.println("\033[91mSe encontraron errores\033[0m");
                 return false;
+            } else {
+                ArrayList<Object> celda = tablaAccion.get(fila).get(colu);
+                if((char)celda.get(0) == 's'){
+                    simbolos.push(tokens.get(i).tipo);
+                    pila.push((Integer)celda.get(1));
+                    i++;
+                } else {
+
+                }
             }
-            i++;
+            k++;
         }
 
         return true;
