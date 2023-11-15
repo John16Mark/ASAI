@@ -54,20 +54,6 @@ public class ASAI implements Parser{
     private final ArrayList<Produccion> ListaProducciones = new ArrayList<>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2));
 
     // Estados
-    private final Estado I0 = new Estado(null, new ArrayList<Produccion>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2)));
-    private final Estado I1 = new Estado(NoTerminal.E, new ArrayList<Produccion>(Arrays.asList(E_, E_1)));
-    private final Estado I2 = new Estado(NoTerminal.T, new ArrayList<Produccion>(Arrays.asList(E_2, T_1)));
-    private final Estado I3 = new Estado(NoTerminal.F, new ArrayList<Produccion>(Arrays.asList(T_2)));
-    private final Estado I4 = new Estado(TipoToken.PAREN_IZQ, new ArrayList<Produccion>(Arrays.asList(F_1, E_1, E_2, T_1, T_2, F_1, F_2)));
-    private final Estado I5 = new Estado(TipoToken.IDENTIFICADOR, new ArrayList<Produccion>(Arrays.asList(F_2)));
-    private final Estado I6 = new Estado(TipoToken.SUMA, new ArrayList<Produccion>(Arrays.asList(E_1, T_1, T_2, F_1, F_2)));
-    private final Estado I7 = new Estado(TipoToken.ASTERISCO, new ArrayList<Produccion>(Arrays.asList(T_1, F_1, F_2)));
-    private final Estado I8 = new Estado(NoTerminal.E, new ArrayList<Produccion>(Arrays.asList(E_1, F_1)));
-    private final Estado I9 = new Estado(NoTerminal.T, new ArrayList<Produccion>(Arrays.asList(E_1, T_1)));
-    private final Estado I10 = new Estado(NoTerminal.F, new ArrayList<Produccion>(Arrays.asList(T_1)));
-    private final Estado I11 = new Estado(TipoToken.PAREN_DER, new ArrayList<Produccion>(Arrays.asList(F_1)));
-    private final ArrayList<Estado> ListaEstados = new ArrayList<>(Arrays.asList(I0, I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11));
-
     private final ArrayList<ArrayList<ArrayList<Object>>> tablaAccion = new ArrayList<>();
     private final ArrayList<Integer> filas = new ArrayList<>();
     private final ArrayList<TipoToken> columnas = new ArrayList<>(Arrays.asList(TipoToken.IDENTIFICADOR, TipoToken.SUMA, TipoToken.ASTERISCO, TipoToken.PAREN_IZQ, TipoToken.PAREN_DER, TipoToken.EOF));
@@ -88,7 +74,7 @@ public class ASAI implements Parser{
         tablaAccion.get(0).set(0, new ArrayList<>(Arrays.asList('s', 5)));
         tablaAccion.get(0).set(3, new ArrayList<>(Arrays.asList('s', 4)));
 
-        tablaAccion.get(1).set(2, new ArrayList<>(Arrays.asList('s', 6)));
+        tablaAccion.get(1).set(1, new ArrayList<>(Arrays.asList('s', 6)));
         tablaAccion.get(1).set(5, new ArrayList<>(Arrays.asList("acc")));
 
         tablaAccion.get(2).set(1, new ArrayList<>(Arrays.asList('r', 2)));
@@ -152,12 +138,11 @@ public class ASAI implements Parser{
     public boolean parse() {
         pila.push(0);
         
-        for(int j=0; j<tablaIrA.size();j++){
-            System.out.println(tablaIrA.get(j));
+        for(int j=0; j<tablaAccion.size();j++){
+            System.out.println(tablaAccion.get(j));
         }
 
-        int k = 0;
-        while(i < tokens.size() && k < 20){
+        while(i < tokens.size()){
             int colu = columnas.indexOf(tokens.get(i).tipo);
             int fila = filas.indexOf(pila.peek());
             System.out.print("\n\033[94m  TABLA ACCIÓN\033[0m");
@@ -181,18 +166,18 @@ public class ASAI implements Parser{
                     i++;
                 } else {
                     // Buscar la producción a reducir
-                    /* */
                     Produccion PaR = ListaProducciones.get((Integer)celda.get(1));
                     System.out.print("\nProducción: "+PaR);
 
                     // Sacar la producción de símbolos y añadir la cabecera de la producción
                     for(int j = 0; j < PaR.ladoDerecho.size(); j++){
                         simbolos.pop();
+                        pila.pop();
                     }
                     simbolos.push(PaR.ladoIzquierdo);
 
                     // Buscar el Ir A correspondiente
-                    pila.pop();
+                    //pila.pop();
                     Integer estadoIrA = tablaIrA.get(pila.peek()).get(colIrA.indexOf(PaR.ladoIzquierdo));
                     System.out.print("\nIr A: "+estadoIrA);
                     if(estadoIrA == null){
@@ -204,7 +189,6 @@ public class ASAI implements Parser{
                     //tablaIrA.get(fila);
                 }
             }
-            k++;
         }
 
         return true;
