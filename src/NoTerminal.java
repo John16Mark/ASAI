@@ -10,11 +10,20 @@ public enum NoTerminal {
             case E_:
                 str = "E'";
                 break;
+            case Q_:
+                str = "Q'";
+                break;
             case A1:
                 str = "A\u2081";
                 break;
             case A2:
                 str = "A\u2082";
+                break;
+            case T1:
+                str = "T\u2081";
+                break;
+            case T2:
+                str = "T\u2082";
                 break;
             default:
                 str = nt.name();

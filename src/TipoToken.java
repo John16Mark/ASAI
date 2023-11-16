@@ -18,6 +18,15 @@ public enum TipoToken {
             case IDENTIFICADOR:
                 str = "id";
                 break;
+            case SELECT:
+                str = "select";
+                break;
+            case FROM:
+                str = "from";
+                break;
+            case DISTINCT:
+                str = "distinct";
+                break;
             case COMA:
                 str = ",";
                 break;

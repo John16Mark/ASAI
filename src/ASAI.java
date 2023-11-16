@@ -1,31 +1,33 @@
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
 public class ASAI implements Parser{
+    PrintWriter pw = new PrintWriter(System.out, true);
+    
     // Producciones
+    private Produccion Q_ = new Produccion(NoTerminal.Q_, new ArrayList<Object>(Arrays.asList(NoTerminal.Q)));
+    private Produccion Q = new Produccion(NoTerminal.Q, new ArrayList<Object>(Arrays.asList(TipoToken.SELECT, NoTerminal.D, TipoToken.FROM, NoTerminal.T)));
+    private Produccion D_1 = new Produccion(NoTerminal.D, new ArrayList<Object>(Arrays.asList(TipoToken.DISTINCT, NoTerminal.P)));
+    private Produccion D_2 = new Produccion(NoTerminal.D, new ArrayList<Object>(Arrays.asList(NoTerminal.P)));
+    private Produccion P_1 = new Produccion(NoTerminal.P, new ArrayList<Object>(Arrays.asList(TipoToken.ASTERISCO)));
+    private Produccion P_2 = new Produccion(NoTerminal.P, new ArrayList<Object>(Arrays.asList(NoTerminal.A)));
+    
+    private Produccion A_1 = new Produccion(NoTerminal.A, new ArrayList<Object>(Arrays.asList(NoTerminal.A, TipoToken.COMA, NoTerminal.A1)));
+    private Produccion A_2 = new Produccion(NoTerminal.A, new ArrayList<Object>(Arrays.asList(NoTerminal.A1)));
+    private Produccion A1 = new Produccion(NoTerminal.A1, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR, NoTerminal.A2)));
+    private Produccion A2_1 = new Produccion(NoTerminal.A2, new ArrayList<Object>(Arrays.asList(TipoToken.PUNTO, TipoToken.IDENTIFICADOR)));
+    private Produccion A2_2 = new Produccion(NoTerminal.A2, new ArrayList<Object>(Arrays.asList()));
+    
+    private Produccion T_1 = new Produccion(NoTerminal.T1, new ArrayList<Object>(Arrays.asList(NoTerminal.T, TipoToken.COMA, NoTerminal.T1)));
+    private Produccion T_2 = new Produccion(NoTerminal.T1, new ArrayList<Object>(Arrays.asList(NoTerminal.T1)));
+    private Produccion T1 = new Produccion(NoTerminal.T1, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR, NoTerminal.T2)));
+    private Produccion T2_1 = new Produccion(NoTerminal.T2, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR)));
+    private Produccion T2_2 = new Produccion(NoTerminal.T2, new ArrayList<Object>(Arrays.asList()));
+    private final ArrayList<Produccion> ListaProducciones = new ArrayList<>(Arrays.asList(Q_, Q, D_1, D_2, P_1, P_2, A_1, A_2, A1, A2_1, A2_2, T_1, T_2, T1, T2_1, T2_2));
     /*
-    private ArrayList<Object> Q = new ArrayList<>(Arrays.asList(TipoToken.SELECT, NoTerminal.D, TipoToken.FROM, NoTerminal.T));
-    private ArrayList<Object> D_1 = new ArrayList<>(Arrays.asList(TipoToken.DISTINCT, NoTerminal.P));
-    private ArrayList<Object> D_2 = new ArrayList<>(Arrays.asList(NoTerminal.P));
-    private ArrayList<Object> P_1 = new ArrayList<>(Arrays.asList(TipoToken.ASTERISCO));
-    private ArrayList<Object> P_2 = new ArrayList<>(Arrays.asList(NoTerminal.A));
-    
-    private ArrayList<Object> A = new ArrayList<>(Arrays.asList(NoTerminal.A2, NoTerminal.A1));
-    private ArrayList<Object> A1_1 = new ArrayList<>(Arrays.asList(TipoToken.COMA, NoTerminal.A));
-    private ArrayList<Object> A1_2 = new ArrayList<>();
-    private ArrayList<Object> A2 = new ArrayList<>(Arrays.asList(TipoToken.IDENTIFICADOR, NoTerminal.A3));
-    private ArrayList<Object> A3_1 = new ArrayList<>(Arrays.asList(TipoToken.PUNTO, TipoToken.IDENTIFICADOR));
-    private ArrayList<Object> A3_2 = new ArrayList<>();
-    
-    private ArrayList<Object> T = new ArrayList<>(Arrays.asList(NoTerminal.T2, NoTerminal.T1));
-    private ArrayList<Object> T1_1 = new ArrayList<>(Arrays.asList(TipoToken.COMA, NoTerminal.T));
-    private ArrayList<Object> T1_2 = new ArrayList<>();
-    private ArrayList<Object> T2 = new ArrayList<>(Arrays.asList(TipoToken.IDENTIFICADOR, NoTerminal.T3));
-    private ArrayList<Object> T3_1 = new ArrayList<>(Arrays.asList(TipoToken.IDENTIFICADOR));
-    private ArrayList<Object> T3_2 = new ArrayList<>();
-
     // Tabla, filas son no terminales, columnas son tokens
     private final ArrayList<ArrayList<Object>> tabla = new ArrayList<>();
     ArrayList<NoTerminal> filas = new ArrayList<>(Arrays.asList(NoTerminal.Q,NoTerminal.D,NoTerminal.P,NoTerminal.A,NoTerminal.A1,NoTerminal.A2,NoTerminal.A3,NoTerminal.T,NoTerminal.T1,NoTerminal.T2,NoTerminal.T3));
@@ -38,6 +40,7 @@ public class ASAI implements Parser{
     private final Stack<Object> simbolos = new Stack<>();
 
     // Producciones
+    /*
     private Produccion E_ = new Produccion(NoTerminal.E_, new ArrayList<Object>(Arrays.asList(NoTerminal.E)));
     private Produccion E_1 = new Produccion(NoTerminal.E, new ArrayList<Object>(Arrays.asList(NoTerminal.E, TipoToken.SUMA, NoTerminal.T)));
     private Produccion E_2 = new Produccion(NoTerminal.E, new ArrayList<Object>(Arrays.asList(NoTerminal.T)));
@@ -46,7 +49,7 @@ public class ASAI implements Parser{
     private Produccion F_1 = new Produccion(NoTerminal.F, new ArrayList<Object>(Arrays.asList(TipoToken.PAREN_IZQ, NoTerminal.E, TipoToken.PAREN_DER)));
     private Produccion F_2 = new Produccion(NoTerminal.F, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR)));
     private final ArrayList<Produccion> ListaProducciones = new ArrayList<>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2));
-
+    */
     // Tabla acción
     private final ArrayList<ArrayList<ArrayList<Object>>> tablaAccion = new ArrayList<>();
     private final ArrayList<Integer> filas = new ArrayList<>();
@@ -58,6 +61,9 @@ public class ASAI implements Parser{
     public ASAI(List<Token> tokens){
         this.tokens = tokens;
 
+        for(int j = 0; j<ListaProducciones.size(); j++){
+            System.out.println(j+". "+ListaProducciones.get(j));
+        }
         // Creación de la tabla
         for(int k=0; k<=11; k++){
             tablaAccion.add(new ArrayList<ArrayList<Object>>(Arrays.asList(null,null,null,null,null,null)));
@@ -131,7 +137,9 @@ public class ASAI implements Parser{
     @Override
     public boolean parse() {
         pila.push(0);
-        
+        if(true){
+            return true;
+        }
         for(int j=0; j<tablaAccion.size();j++){
             System.out.println(tablaAccion.get(j));
         }
@@ -186,7 +194,7 @@ public class ASAI implements Parser{
 
         return true;
     }
-
+    /*
     private String impSimbolos(){
         String str = "";
         for (Object o : simbolos) {
@@ -198,5 +206,5 @@ public class ASAI implements Parser{
             }
         }
         return str;
-    }
+    }*/
 }

@@ -11,15 +11,19 @@ public class Produccion {
 
     @Override
     public String toString(){
-        String str = ladoIzquierdo.name();
-        str += " "+(char)26+" ";
+        String str = NoTerminal.imprimir(ladoIzquierdo);
+        str += " \u2192 ";
         for (Object o : ladoDerecho) {
             if(o instanceof NoTerminal){
                 str += NoTerminal.imprimir((NoTerminal)o);
             }
             if(o instanceof TipoToken){
-                str += TipoToken.imprimir((TipoToken)o);
+                str += "\033[96m"+TipoToken.imprimir((TipoToken)o)+"\033[0m";
             }
+            str += " ";
+        }
+        if(ladoDerecho.isEmpty()){
+            str += "\033[31m\u03BB\033[0m";
         }
         return str;
     }
