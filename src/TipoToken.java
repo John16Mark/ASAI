@@ -8,9 +8,7 @@ public enum TipoToken {
     COMA, PUNTO, ASTERISCO,
 
     // Final de cadena
-    EOF,
-
-    SUMA, PAREN_IZQ, PAREN_DER;
+    EOF;
 
     public static String imprimir(TipoToken tt){
         String str = "";
@@ -38,15 +36,6 @@ public enum TipoToken {
                 break;
             case EOF:
                 str = "$";
-                break;
-            case SUMA:
-                str = "+";
-                break;
-            case PAREN_IZQ:
-                str = "(";
-                break;
-            case PAREN_DER:
-                str = ")";
                 break;
             default:
                 str = tt.name();
