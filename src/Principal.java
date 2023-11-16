@@ -25,12 +25,12 @@ public class Principal {
     }
 
     private static void ejecutar(String source){
-        Scanner2 scanner = new Scanner2(source);
+        Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
         
-        for(Token token : tokens){
+        /*for(Token token : tokens){
             System.out.println(token.imprimir());
-        }
+        }*/
         
         Parser parser = new ASAI(tokens);
         parser.parse();
