@@ -13,18 +13,6 @@ public class ASAI implements Parser{
     private final Stack<Object> simbolos = new Stack<>();
 
     // Producciones
-    /*
-    private Produccion E_ = new Produccion(NoTerminal.E_, new ArrayList<Object>(Arrays.asList(NoTerminal.E)));
-    private Produccion E_1 = new Produccion(NoTerminal.E, new ArrayList<Object>(Arrays.asList(NoTerminal.E, TipoToken.SUMA, NoTerminal.T)));
-    private Produccion E_2 = new Produccion(NoTerminal.E, new ArrayList<Object>(Arrays.asList(NoTerminal.T)));
-    private Produccion T_1 = new Produccion(NoTerminal.T, new ArrayList<Object>(Arrays.asList(NoTerminal.T, TipoToken.ASTERISCO, NoTerminal.F)));
-    private Produccion T_2 = new Produccion(NoTerminal.T, new ArrayList<Object>(Arrays.asList(NoTerminal.F)));
-    private Produccion F_1 = new Produccion(NoTerminal.F, new ArrayList<Object>(Arrays.asList(TipoToken.PAREN_IZQ, NoTerminal.E, TipoToken.PAREN_DER)));
-    private Produccion F_2 = new Produccion(NoTerminal.F, new ArrayList<Object>(Arrays.asList(TipoToken.IDENTIFICADOR)));
-    private final ArrayList<Produccion> ListaProducciones = new ArrayList<>(Arrays.asList(E_, E_1, E_2, T_1, T_2, F_1, F_2));
-    */
-
-    // Producciones
     private Produccion Q_ = new Produccion(NoTerminal.Q_, new ArrayList<Object>(Arrays.asList(NoTerminal.Q)));
     private Produccion Q = new Produccion(NoTerminal.Q, new ArrayList<Object>(Arrays.asList(TipoToken.SELECT, NoTerminal.D, TipoToken.FROM, NoTerminal.T)));
     private Produccion D_1 = new Produccion(NoTerminal.D, new ArrayList<Object>(Arrays.asList(TipoToken.DISTINCT, NoTerminal.P)));
@@ -56,9 +44,6 @@ public class ASAI implements Parser{
     public ASAI(List<Token> tokens){
         this.tokens = tokens;
 
-        /*for(int j = 0; j<ListaProducciones.size(); j++){
-            System.out.println(j+". "+ListaProducciones.get(j));
-        }*/
         // Creación de la tabla
         for(int k=0; k<=23; k++){
             tablaAccion.add(new ArrayList<ArrayList<Object>>(Arrays.asList(null,null,null,null, null,null,null,null)));
@@ -66,6 +51,7 @@ public class ASAI implements Parser{
             filas.add(k);
         }
 
+        // Crear tabla de acciones
         addAccion(0, TipoToken.SELECT, 's', 2);
         addAccion(1, TipoToken.EOF, "acc");
         addAccion(2, TipoToken.DISTINCT, 's', 5);
@@ -78,20 +64,14 @@ public class ASAI implements Parser{
         addAccion(6, TipoToken.FROM, 'r', 2);
         addAccion(7, TipoToken.FROM, 'r', 3);
         addAccion(8, TipoToken.FROM, 'r', 4);
-
         addAccion(9, TipoToken.FROM, 'r', 5);
-
         addAccion(9, TipoToken.COMA, 's', 15);
         addAccion(10, TipoToken.FROM, 'r', 7);
         addAccion(10, TipoToken.COMA, 'r', 7);
-        //
         addAccion(11, TipoToken.COMA, 'r', 10);
         addAccion(11, TipoToken.FROM, 'r', 10);
-        //
         addAccion(11, TipoToken.PUNTO, 's', 14);
-
         addAccion(12, TipoToken.EOF, 'r', 1);
-
         addAccion(12, TipoToken.COMA, 's', 18);
         addAccion(13, TipoToken.FROM, 'r', 8);
         addAccion(13, TipoToken.COMA, 'r', 8);
@@ -102,10 +82,8 @@ public class ASAI implements Parser{
         addAccion(17, TipoToken.FROM, 'r', 6);
         addAccion(17, TipoToken.COMA, 'r', 6);
         addAccion(18, TipoToken.IDENTIFICADOR, 's', 19);
-
         addAccion(19, TipoToken.COMA, 'r', 15);
         addAccion(19, TipoToken.EOF, 'r', 15);
-
         addAccion(19, TipoToken.IDENTIFICADOR, 's', 23);
         addAccion(20, TipoToken.COMA, 'r', 11);
         addAccion(20, TipoToken.EOF, 'r', 11);
@@ -115,8 +93,8 @@ public class ASAI implements Parser{
         addAccion(22, TipoToken.EOF, 'r', 13);
         addAccion(23, TipoToken.COMA, 'r', 14);
         addAccion(23, TipoToken.EOF, 'r', 14);
-        //imprimirTabla();
         
+        // Crear tabla Ir_A
         addIrA(0, NoTerminal.Q, 1);
         addIrA(2, NoTerminal.D, 3);
         addIrA(2, NoTerminal.P, 7);
@@ -131,33 +109,25 @@ public class ASAI implements Parser{
         addIrA(15, NoTerminal.A1, 17);
         addIrA(18, NoTerminal.T1, 20);
         addIrA(19, NoTerminal.T2, 22);
-        
-        /*for(int j=0; j<colIrA.size(); j++){
-            System.out.print(colIrA.get(j)+" ");
-        } System.out.print("\n");
-        for(int j=0; j<tablaIrA.size(); j++){
-            System.out.println(j+" "+tablaIrA.get(j));
-        }*/
-        
     }
 
     @Override
     public boolean parse() {
         pila.push(0);
 
-        for(int j=0; j<tablaAccion.size();j++){
+        /*for(int j=0; j<tablaAccion.size();j++){
             System.out.println(tablaAccion.get(j));
-        }
+        }*/
 
         while(i < tokens.size()){
             int colu = columnas.indexOf(tokens.get(i).tipo);
             int fila = filas.indexOf(pila.peek());
-            
+            /*
             System.out.print("\n\033[94m  TABLA ACCIÓN\033[0m");
             System.out.print("\nCelda: ["+pila.peek()+ ", "+TipoToken.imprimir(tokens.get(i).tipo)+"] = "+tablaAccion.get(fila).get(colu));
             System.out.print("\nPila: "+pila);
             System.out.print("\nSímbolos: "+impSimbolos()+"\n");
-            
+            */
             // Si la celda está vacía -> Error
             if(tablaAccion.get(fila).get(colu) == null){
                 System.out.println("\033[91mSe encontraron errores\033[0m");
@@ -175,7 +145,7 @@ public class ASAI implements Parser{
                 } else {
                     // Buscar la producción a reducir
                     Produccion PaR = ListaProducciones.get((Integer)celda.get(1));
-                    System.out.print("\nProducción: "+PaR);
+                    //System.out.print("\nProducción: "+PaR);
 
                     // Sacar la producción de símbolos y añadir la cabecera de la producción
                     for(int j = 0; j < PaR.ladoDerecho.size(); j++){
@@ -186,13 +156,13 @@ public class ASAI implements Parser{
 
                     // Buscar el Ir A correspondiente
                     Integer estadoIrA = tablaIrA.get(pila.peek()).get(colIrA.indexOf(PaR.ladoIzquierdo));
-                    System.out.print("\nIr A: "+estadoIrA);
+                    //System.out.print("\nIr A: "+estadoIrA);
                     if(estadoIrA == null){
                         System.out.println("\033[91mSe encontraron errores\033[0m");
                         return false;
                     }
                     pila.push(estadoIrA);
-                    System.out.print("\nPila: "+pila+"\n");
+                    //System.out.print("\nPila: "+pila+"\n");
                 }
             }
         }
