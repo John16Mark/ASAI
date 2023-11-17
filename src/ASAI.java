@@ -131,6 +131,7 @@ public class ASAI implements Parser{
             // Si la celda está vacía -> Error
             if(tablaAccion.get(fila).get(colu) == null){
                 System.out.println("\033[91mSe encontraron errores\033[0m");
+                imprimirError(fila, i);
                 return false;
             } else {
                 ArrayList<Object> celda = tablaAccion.get(fila).get(colu);
@@ -194,6 +195,43 @@ public class ASAI implements Parser{
     private void addIrA(int fila, NoTerminal nt, int estado){
         int col = colIrA.indexOf(nt);
         tablaIrA.get(fila).set(col, estado);
+    }
+
+    private void imprimirError(int estado, int hasta){
+        String str = "  Se esperaba ";
+        ArrayList<TipoToken> esperados = new ArrayList<>();
+        int k;
+        
+        for(k=0; k<tablaAccion.get(estado).size(); k++){
+            if(tablaAccion.get(estado).get(k) != null && columnas.get(k) != TipoToken.EOF){
+                esperados.add(columnas.get(k));
+            }
+        }
+        
+        for(k=0; k<esperados.size(); k++){
+            str += "\'" + TipoToken.imprimir(esperados.get(k)) + "\'";
+            if((k>0 && k != esperados.size()-1)||(k==0 && esperados.size()>1)){
+                str += " o ";
+            }
+        }
+
+        System.out.print("\033[91m"+str+"\033[0m");
+        if(hasta == 0){
+            System.out.print("\n");
+            return;
+        }
+        System.out.println("\033[91m después de\033[0m");
+        str = "";
+        String s;
+        for(k=0; k<i; k++){
+            if(tokens.get(k).tipo != TipoToken.IDENTIFICADOR){
+                s = TipoToken.imprimir(tokens.get(k).tipo);
+            } else {
+                s = tokens.get(k).lexema;
+            }
+            str += s+" ";
+        }
+        System.out.println("  \033[91m\'"+str+"\'\033[0m");
     }
 
     private void imprimirTabla(){
