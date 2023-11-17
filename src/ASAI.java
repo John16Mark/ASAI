@@ -170,19 +170,6 @@ public class ASAI implements Parser{
 
         return true;
     }
-    
-    private String impSimbolos(){
-        String str = "";
-        for (Object o : simbolos) {
-            if(o instanceof NoTerminal){
-                str += NoTerminal.imprimir((NoTerminal)o);
-            }
-            if(o instanceof TipoToken){
-                str += TipoToken.imprimir((TipoToken)o);
-            }
-        }
-        return str;
-    }
 
     private void addAccion(int fila, TipoToken tt, char accion, int estado){
         int col = columnas.indexOf(tt);
@@ -234,81 +221,4 @@ public class ASAI implements Parser{
         System.out.println("  \033[91m\'"+str+"\'\033[0m");
     }
 
-    private void imprimirTabla(){
-        int k;
-        esi();
-        System.out.print("\u2500\u2500");
-        cs();
-        for(k=0; k<7; k++){
-            slh();cs();
-        } slh();esd();
-        System.out.println("\u2502  \u2502 select \u2502  from  \u2502distinct\u2502    *   \u2502    .   \u2502    ,   \u2502   id   \u2502    $   \u2502");
-        lh();
-        for(k=0; k< tablaAccion.size(); k++){
-            slv();
-            System.out.print(k);
-            if(k<10){
-                System.out.print(" ");
-            } slv();
-            for(int j=0; j<tablaAccion.get(k).size(); j++){
-                System.out.print("   ");
-                if(tablaAccion.get(k).get(j) == null){
-                    System.out.print("     ");}
-                else if(tablaAccion.get(k).get(j).size() == 2){
-                    if((char)tablaAccion.get(k).get(j).get(0) == 'r'){
-                        System.out.print("\033[94m");
-                    }
-                    System.out.print(tablaAccion.get(k).get(j).get(0));
-                    System.out.print(tablaAccion.get(k).get(j).get(1));
-                    System.out.print("\033[0m");
-                    if((Integer)tablaAccion.get(k).get(j).get(1) < 10){
-                        System.out.print("   ");
-                    } else{
-                        System.out.print("  ");
-                    }
-                } else {
-                    System.out.print(tablaAccion.get(k).get(j).get(0));
-                    System.out.print("  ");
-                }
-                slv();
-                
-            }
-            System.out.print("\n");
-        }
-    }
-    private void slh(){
-        System.out.print("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-    }
-    private void slv(){
-        System.out.print("\u2502");
-    }
-
-    private void lh(){
-        ci();
-        System.out.print("\u2500\u2500\u253C");
-        for(int j=0; j<7; j++){
-            slh(); System.out.print("\u253C"); 
-        }
-        slh();
-        cd();
-        System.out.print("\n");
-    }
-
-    private void esi(){
-        System.out.print("\u250C");
-    }
-    private void esd(){
-        System.out.print("\u2510\n");
-    }
-
-    private void cs(){
-        System.out.print("\u252C");
-    }
-    private void ci(){
-        System.out.print("\u251C");
-    }
-    private void cd(){
-        System.out.print("\u2524");
-    }
-    
 }
